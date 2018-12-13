@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyExtensions.FW46</name>
+    </assembly>
+    <members>
+        <member name="M:MyExtensions.Project``2(``0,System.Func{``0,``1})">
+            <summary>
+            Projects a value into a function invocation
+            </summary>
+        </member>
+        <member name="M:MyExtensions.ReverseBool(System.Boolean)">
+            <summary>
+            Reverse bool value
+            </summary>
+        </member>
+        <member name="M:MyExtensions.Call``1(``0,System.Action{``0})">
+            <summary>
+            Calls an action over a variable and the returns that variable
+            </summary>
+        </member>
+    </members>
+</doc>
