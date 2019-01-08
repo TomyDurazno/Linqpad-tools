@@ -1,2 +1,2 @@
 * linguist-vendored
-*.linq linguist-vendored=false
+*.cs linguist-vendored=false
