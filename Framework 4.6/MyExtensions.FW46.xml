@@ -19,5 +19,25 @@
             Calls an action over a variable and the returns that variable
             </summary>
         </member>
+        <member name="M:MyExtensions.Pipe``3(``0,System.Func{``0,``1},System.Func{``1,``2})">
+            <summary>
+            Pipes 2 functions
+            </summary>
+        </member>
+        <member name="M:MyExtensions.Pipe``4(``0,System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``3})">
+            <summary>
+            Pipes 3 functions
+            </summary>
+        </member>
+        <member name="M:MyExtensions.Pipe``5(``0,System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``3},System.Func{``3,``4})">
+            <summary>
+            Pipes 4 functions
+            </summary>
+        </member>
+        <member name="M:MyExtensions.Pipe``6(``0,System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``3},System.Func{``3,``4},System.Func{``4,``5})">
+            <summary>
+            Pipes 5 functions
+            </summary>
+        </member>
     </members>
 </doc>

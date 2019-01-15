@@ -41,25 +41,39 @@ public static class MyExtensions
 
 	public static T[] AsArray<T>(this T obj) => new T[] { obj };	
 	
-	public static dynamic[] AsArrayDynamicParams(params dynamic[] elements)
-	{
-		return elements;
-	}
+	public static dynamic[] AsArrayDynamicParams(params dynamic[] elements) => elements;
 
 	public static string ToNullString<T>(this T obj) => obj?.ToString() ?? "NULL";
 
 	/// <summary>
 	/// Reverse bool value
 	/// </summary>
-	public static bool ReverseBool(this bool boolean)
-	{
-		return !boolean;
-	}
+	public static bool ReverseBool(this bool boolean) => !boolean;
 
 	/// <summary>
 	/// Calls an action over a variable and the returns that variable
 	/// </summary>
 	public static T Call<T>(this T obj, Action<T> act) { act.Invoke(obj); return obj; }
+
+	/// <summary>
+	/// Pipes 2 functions
+	/// </summary>
+	public static S Pipe<T, K, S>(this T obj, Func<T, K> fun1, Func<K, S> fun2) => fun2(fun1(obj));
+	
+	/// <summary>
+	/// Pipes 3 functions
+	/// </summary>
+	public static R Pipe<T, K, S, R>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3) => fun3(fun2(fun1(obj)));
+
+	/// <summary>
+	/// Pipes 4 functions
+	/// </summary>
+	public static G Pipe<T, K, S, R, G>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3, Func<R, G> fun4) => fun4(fun3(fun2(fun1(obj))));
+
+	/// <summary>
+	/// Pipes 5 functions
+	/// </summary>
+	public static H Pipe<T, K, S, R, G, H>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3, Func<R, G> fun4, Func<G, H> fun5) => fun5(fun4(fun3(fun2(fun1(obj)))));
 
 	#endregion
 
@@ -522,7 +536,8 @@ public static class MyUtils
 	{
 		while (DateTime.Now.TimeOfDay < timeStop)
 		{
-			await task.ContinueWith(t => System.Threading.Tasks.Task.Delay(milliseconds));
+			await task;
+			await System.Threading.Tasks.Task.Delay(milliseconds);
 		}
 	}
 
@@ -952,13 +967,16 @@ public class ClassBuilder
 
 public static class ClassBuilderExtensions
 {
-	public static void SetProps<T>(this T obj, IEnumerable<string> propsName)
+	public static List<string> SetProps<T>(this T obj, IEnumerable<string> propsName)
 	{
-		obj.GetType().GetProperties().Zip(propsName, (prop, result) =>
-		{
-			prop.SetValue(obj, result);
-			return string.Format("prop: {0}, value: {1}", prop.Name, result);
-		}).ToList();
+		return obj.GetType()
+				  .GetProperties()
+				  .Zip(propsName, (prop, result) =>
+				  {
+				  		prop.SetValue(obj, result);
+						return string.Format("prop: {0}, value: {1}", prop.Name, result);
+				  })
+				  .ToList();
 	}
 }
 #endregion
