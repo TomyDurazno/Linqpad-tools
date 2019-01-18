@@ -7,6 +7,7 @@ Bunch of tools for LINQPad (written in C#) try them out!
 
 Includes:
 
+
 - Tasker manager (to manage daily basis tasks)
 
 - Class Builder (for dynamically create and invoke classes)
@@ -26,3 +27,6 @@ Includes:
 - DumpJSON (Dump JSON format to LINQPad's console output)
 
 - MakeFunc / MakeAction (push Roslyn's type inference to the limit!)
+
+
+Experiment: folder with numerous examples of cool things you can do using C#
