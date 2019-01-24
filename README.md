@@ -28,5 +28,6 @@ Includes:
 
 - MakeFunc / MakeAction (push Roslyn's type inference to the limit!)
 
+- TaskCounter (Measure time execution of a task)
 
 Experiment: folder with numerous examples of cool things you can do using C#
