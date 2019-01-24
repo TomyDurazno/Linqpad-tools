@@ -6,8 +6,8 @@ void Main()
 {
 	//JSON Pretty printer	
 	 @"C:\Users\tcordara\Downloads\Hepha state_Tue Jan 15 2019_.json"
-		   .Pipe(MyUtils.ReadTxt, 
-		   		string.Concat, 
-				JObject.Parse, 
-				j => j.DumpJson());	  
-}
+		   .Pipe(MyUtils.ReadTxt, 				 			   		 
+		   		 string.Concat, 
+				 JObject.Parse, 
+				 j => j.DumpJson());	  
+} 
