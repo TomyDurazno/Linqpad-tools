@@ -19,6 +19,11 @@
             Calls an action over a variable and the returns that variable
             </summary>
         </member>
+        <member name="M:MyExtensions.Pipe``2(``0,System.Func{``0,``1})">
+            <summary>
+            Pipes 1 functions
+            </summary>
+        </member>
         <member name="M:MyExtensions.Pipe``3(``0,System.Func{``0,``1},System.Func{``1,``2})">
             <summary>
             Pipes 2 functions

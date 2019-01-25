@@ -56,6 +56,11 @@ public static class MyExtensions
 	public static T Call<T>(this T obj, Action<T> act) { act.Invoke(obj); return obj; }
 
 	/// <summary>
+	/// Pipes 1 functions
+	/// </summary>
+	public static K Pipe<T, K>(this T obj, Func<T, K> fun) => fun(obj);
+
+	/// <summary>
 	/// Pipes 2 functions
 	/// </summary>
 	public static S Pipe<T, K, S>(this T obj, Func<T, K> fun1, Func<K, S> fun2) => fun2(fun1(obj));
@@ -1007,10 +1012,7 @@ public static class Tasker
 		public IEnumerable<string> Description { get; set; }
 		public Meta MetaObj { get; set; }
 
-		public CreatorArgs()
-		{
-
-		}
+		public CreatorArgs() { }
 
 		public CreatorArgs(string id, string name, IEnumerable<string> description, Meta metaobj)
 		{
@@ -1020,21 +1022,9 @@ public static class Tasker
 			MetaObj = metaobj;
 		}
 
-		public string FolderName
-		{
-			get
-			{
-				return ID + " - " + Name;
-			}
-		}
+		public string FolderName { get => ID + " - " + Name; }
 
-		public string TaskName
-		{
-			get
-			{
-				return "Task " + ID + ".txt";
-			}
-		}
+		public string TaskName { get => "Task " + ID + ".txt"; }
 	}
 
 	public class Meta
@@ -1185,20 +1175,11 @@ public static class TaskCounter
 			Name = name
 		};
 	}
-
-	public static async Task<S> Run2<T, K, S>(Task<T> task, Func<K> preEval, Func<K, T, S> postEval)
-	{
-		var k = preEval();
-
-		var result = await task;
-		return postEval(k, result);
-	}
-
+	
 	public class TimedResult<T>
 	{
 		public TimeSpan Elapsed { get; set; }
 		public T Result { get; set; }
-
 		public string Name { get; set; }
 	}
 }
