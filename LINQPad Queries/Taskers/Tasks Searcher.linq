@@ -10,15 +10,19 @@ void Main()
 	   .EnumerateDirectories()
 	   .Where(d => d.CreationTime >= date)
 	   .OrderBy(d => d.CreationTime)
-	   .Select(d => new { d.CreationTime,  Name = d.Name, Meta = GetAuthorizedFiles(d.FullName).Where(s => s.Contains("meta")).First().Pipe(ToMeta) })
+	   .Select(d => new { d.CreationTime,  Name = d.Name, Meta = GetAuthorizedFiles(d.FullName).Where(s => s.Contains("meta"))
+	   																						   .First()
+																							   .Pipe(ToMeta) })
 	   .GroupBy(d => d.CreationTime.Month + "/" +  d.CreationTime.Day)
 	   .Dump();
 }
 
-public Tasker.Meta ToMeta(string metasrc)
-{
-	return MyUtils.ReadTxt(metasrc).Pipe(string.Concat, JObject.Parse, j => j.ToObject<Tasker.Meta>());
-}
+public Tasker.Meta ToMeta(string metasrc) => 
+		metasrc.Pipe(MyUtils.ReadTxt,
+				  	string.Concat,
+				  	JObject.Parse, 
+					j => j.ToObject<Tasker.Meta>());
+
 
 List<string> GetDirectoriesRecursive(string parent)
 {

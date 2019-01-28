@@ -80,9 +80,7 @@ public static class MyExtensions
 	/// </summary>
 	public static H Pipe<T, K, S, R, G, H>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3, Func<R, G> fun4, Func<G, H> fun5) => fun5(fun4(fun3(fun2(fun1(obj)))));
 
-	#endregion
-
-	public static string GetCurrentMethod() => new StackTrace().GetFrame(1).GetMethod().Name;
+	#endregion	
 
 	//Gracias Jon Skeet!	
 	public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
@@ -102,15 +100,6 @@ public static class MyExtensions
 				  .Select(f => f.Name)
 				  .GroupBy(f => f[0])
 				  .OrderBy(f => f.Key);
-	}
-
-	//For non-null propagation environments
-	public static bool IsNullOrFalse(this bool? boolean)
-	{
-		if (!boolean.HasValue)
-			return true;
-
-		return !boolean.Value;
 	}
 
 	#region DumpJson
