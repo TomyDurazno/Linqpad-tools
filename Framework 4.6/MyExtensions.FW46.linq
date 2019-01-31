@@ -436,12 +436,32 @@ public static class MyUtils
 		}
 	}
 
+	public static Newtonsoft.Json.Linq.JArray ReadJSONArray(string fileName)
+	{
+		var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+
+		using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+		{
+			var reader = new JsonTextReader(new StringReader(streamReader.ReadToEnd()));
+			return JArray.Load(reader);
+		}
+	}
+
 	public static void WriteJsonToDesktop(Newtonsoft.Json.Linq.JObject JObj, string fileName)
 	{
 		using (StreamWriter file = File.CreateText(Path.Combine(desktopPath, fileName)))
 		using (JsonTextWriter writer = new JsonTextWriter(file))
 		{
 			JObj.WriteTo(writer);
+		}
+	}
+
+	public static void WriteJsonToDesktop(Newtonsoft.Json.Linq.JArray JArray, string fileName)
+	{
+		using (StreamWriter file = File.CreateText(Path.Combine(desktopPath, fileName)))
+		using (JsonTextWriter writer = new JsonTextWriter(file))
+		{
+			JArray.WriteTo(writer);
 		}
 	}
 
@@ -704,7 +724,7 @@ public static class MyUtils
 
 	public static string DateAsFileName()
 	{
-		return string.Concat("_", DateTime.Now.ToShortDateString().SplitBy('/').Project(s => string.Join("-", s)));
+		return string.Concat("_", DateTime.Now.ToString().SplitBy('/').Project(s => string.Join("-", s)));
 	}
 
 	#endregion
@@ -1082,6 +1102,10 @@ public static class Tasker
 			var description = creator.Description.All(string.IsNullOrEmpty) ? "*No Description*".AsArray().ToList() : creator.Description;
 
 			items.AddRange(description);
+			
+			var taskUrl = "https://efficienttech.atlassian.net/browse/" + creator.ID; 
+			
+			items.AddRange(new string[]{string.Empty, "Url: ",taskUrl, string.Empty});
 
 			items.AddRange(new string[] { string.Empty, separator, string.Empty, "Status: ", string.Empty });
 

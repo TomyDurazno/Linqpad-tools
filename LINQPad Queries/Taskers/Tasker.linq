@@ -8,10 +8,10 @@ void Main()
 {
     //Hint: posiblemente hay que hacer un form más bonito,
     //ver si se puede hacer en LinqPad. 
-    var todo = Tasker.Do.Move;
+    var todo = Tasker.Do.Create;
         
-    var ID = "ROC-325";    
-    var Name = "Slow and unresponsive API load times";
+    var ID = "ROC-347";    
+    var Name = "Add element Ids";
         
     #region switch
 
