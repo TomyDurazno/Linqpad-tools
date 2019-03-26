@@ -21,8 +21,6 @@ let reverse list =
 let dumper a =
     a.Call(fun x -> x.Dump())
 
-//Run length encoding
-//Pista: se pueden usar varios parámetros! 
 let encoding list =
     let rec encode list (acum: (int * 'b) list) cont =
         match list with

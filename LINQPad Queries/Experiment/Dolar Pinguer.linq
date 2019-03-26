@@ -16,6 +16,7 @@
   <Namespace>System.Web.Script.Serialization</Namespace>
   <Namespace>RestSharp</Namespace>
   <Namespace>Newtonsoft.Json.Linq</Namespace>
+  <Namespace>System.Reactive.Linq</Namespace>
 </Query>
 
 async Task Main()
@@ -26,11 +27,13 @@ async Task Main()
 	
 	var fileName = "DolarHoy.txt";
 	
-	Action action = () => Cotizar().ContinueWith(t => MyUtils.WriteTxtToDesktop(t.Result.ToString().AsArray(), fileName))
+	bool writeToTxt = false;
+
+	Action action = () => Cotizar().ContinueWith(t => t.Result.ToString().Dump().Call((s) => { if (writeToTxt) MyUtils.WriteTxtToDesktop(s.AsArray(), fileName); }))
 								   .Wait();
 
 	//Remember: ctrl + shift + f5 for 'Query Process Unload'
-	await MyUtils.SetIntervalAsync(milliseconds, stop, action);				
+	await MyUtils.SetIntervalAsync(milliseconds, stop, action);		
 }
 
 public async Task<DolarServiceResponse> Cotizar()

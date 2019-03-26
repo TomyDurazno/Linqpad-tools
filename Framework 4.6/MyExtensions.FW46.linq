@@ -981,16 +981,33 @@ public class ClassBuilder
 
 public static class ClassBuilderExtensions
 {
-	public static List<string> SetProps<T>(this T obj, IEnumerable<string> propsName)
+	public static List<string> SetProps<T>(this T obj, IEnumerable<string> propsValues)
 	{
 		return obj.GetType()
 				  .GetProperties()
-				  .Zip(propsName, (prop, result) =>
+				  .Zip(propsValues, (prop, result) =>
 				  {
 				  		prop.SetValue(obj, result);
 						return string.Format("prop: {0}, value: {1}", prop.Name, result);
 				  })
 				  .ToList();
+	}
+
+	public static K SetFields<T, K>(this T item, K instance)
+	{
+		var fields = item.GetType().GetFields();
+		var instanceType = instance.GetType();
+
+		foreach (var field in fields)
+		{
+			var fieldIns = instanceType.GetField(field.Name);
+			if (fieldIns != null)
+			{
+				fieldIns.SetValue(instance, field.GetValue(item));
+			}
+		}
+
+		return instance;
 	}
 }
 #endregion

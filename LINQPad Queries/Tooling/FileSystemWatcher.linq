@@ -2,7 +2,7 @@
 
 void Main()
 {
-	string path = @"C:\Users\tcordara\Desktop";
+	string path = MyUtils.DesktopPath;
 	var watcher = new FileSystemWatcher();
 	watcher.Path = path;
 	watcher.NotifyFilter = NotifyFilters.LastWrite;
