@@ -805,7 +805,10 @@ public static class MyUtils
 	
 	#region Excel Generation
 	
-	public static void GenerateExcel(IEnumerable<IEnumerable<string>> matrix, string path, bool openGenerated = true)
+	public static class Excel
+	{
+	
+	public static void Generate(IEnumerable<IEnumerable<string>> matrix, string path, bool openGenerated = true)
 	{
 		var workbook = new HSSFWorkbook();
 		var sheet = workbook.CreateSheet();
@@ -841,14 +844,78 @@ public static class MyUtils
 			OpenFile(path);
 	}
 
-	public static void GenerateExcelToDesktop(IEnumerable<IEnumerable<string>> matrix, string fileName)
+	public static void GenerateToDesktop(IEnumerable<IEnumerable<string>> matrix, string fileName)
 	{
-		var path = Path.Combine(desktopPath, fileName);
-		GenerateExcel(matrix, path);
+		Excel.Generate(matrix, Path.Combine(desktopPath, fileName));
 	}
 
-	#endregion
+	public static DataTable GetDataTableFromSpreadSheet(String Path, int sheetNumber = 0)
+	{
+		XSSFWorkbook wb;
+		XSSFSheet sh;
+		String Sheet_name;
+
+		using (var fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
+		{
+			wb = new XSSFWorkbook(fs);
+
+			Sheet_name = wb.GetSheetAt(sheetNumber).SheetName;  //get first sheet name
+		}
+		DataTable DT = new DataTable();
+		DT.Rows.Clear();
+		DT.Columns.Clear();
+
+		// get sheet
+		sh = (XSSFSheet)wb.GetSheet(Sheet_name);
+
+		int i = 0;
+		while (sh.GetRow(i) != null)
+		{
+			// add neccessary columns
+			if (DT.Columns.Count < sh.GetRow(i).Cells.Count)
+			{
+				for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
+				{
+					DT.Columns.Add("", typeof(string));
+				}
+			}
+
+			// add row
+			DT.Rows.Add();
+
+			// write row value
+			for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
+			{
+				var cell = sh.GetRow(i).GetCell(j);
+
+				if (cell != null)
+				{
+					// TODO: you can add more cell types capatibility, e. g. formula
+					switch (cell.CellType)
+					{
+						case NPOI.SS.UserModel.CellType.Numeric:
+							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).NumericCellValue;
+							//dataGridView1[j, i].Value = sh.GetRow(i).GetCell(j).NumericCellValue;
+
+							break;
+						case NPOI.SS.UserModel.CellType.String:
+							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).StringCellValue;
+
+							break;
+					}
+				}
+			}
+
+			i++;
+		}
+
+		return DT;
+		}
+
+	}
 	
+	#endregion
+
 	#region DB/SQL Related
 
 	public static class DB
@@ -1069,69 +1136,6 @@ public static class MyUtils
 				 : false;
 
 	#endregion
-
-	public static DataTable GetDataTableFromExcel(String Path, int sheetNumber = 0)
-	{
-		XSSFWorkbook wb;
-		XSSFSheet sh;
-		String Sheet_name;
-
-		using (var fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-		{
-			wb = new XSSFWorkbook(fs);
-
-			Sheet_name = wb.GetSheetAt(sheetNumber).SheetName;  //get first sheet name
-		}
-		DataTable DT = new DataTable();
-		DT.Rows.Clear();
-		DT.Columns.Clear();
-
-		// get sheet
-		sh = (XSSFSheet)wb.GetSheet(Sheet_name);
-
-		int i = 0;
-		while (sh.GetRow(i) != null)
-		{
-			// add neccessary columns
-			if (DT.Columns.Count < sh.GetRow(i).Cells.Count)
-			{
-				for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
-				{
-					DT.Columns.Add("", typeof(string));
-				}
-			}
-
-			// add row
-			DT.Rows.Add();
-
-			// write row value
-			for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
-			{
-				var cell = sh.GetRow(i).GetCell(j);
-
-				if (cell != null)
-				{
-					// TODO: you can add more cell types capatibility, e. g. formula
-					switch (cell.CellType)
-					{
-						case NPOI.SS.UserModel.CellType.Numeric:
-							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).NumericCellValue;
-							//dataGridView1[j, i].Value = sh.GetRow(i).GetCell(j).NumericCellValue;
-
-							break;
-						case NPOI.SS.UserModel.CellType.String:
-							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).StringCellValue;
-
-							break;
-					}
-				}
-			}
-
-			i++;
-		}
-
-		return DT;
-	}
 	
 	public static class IO
 	{
