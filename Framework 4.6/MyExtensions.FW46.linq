@@ -21,66 +21,158 @@
   <Namespace>System.Threading.Tasks</Namespace>
   <Namespace>System.Xml.Serialization</Namespace>
   <Namespace>System.Dynamic</Namespace>
+  <Namespace>NPOI.XSSF.UserModel</Namespace>
 </Query>
 
-void Main()
-{
-	
-}
+void Main() { }
 
 #region MyExtensions
 
 public static class MyExtensions
 {
-	#region Powerful one-liners
-
-	/// <summary>
-	/// Projects a value into a function invocation
-	/// </summary>
-	public static K Project<T, K>(this T obj, Func<T, K> func) => func.Invoke(obj);
-
-	public static T[] AsArray<T>(this T obj) => new T[] { obj };	
+	#region Powerful one-liners	
 	
-	public static dynamic[] AsArrayDynamicParams(params dynamic[] elements) => elements;
-
-	public static string ToNullString<T>(this T obj) => obj?.ToString() ?? "NULL";
-
 	/// <summary>
-	/// Reverse bool value
+	/// Calls an action over a variable and then returns that variable
 	/// </summary>
-	public static bool ReverseBool(this bool boolean) => !boolean;
+	public static T Mutate<T>(this T obj, Action<T> act) { act.Invoke(obj); return obj; }
 
-	/// <summary>
-	/// Calls an action over a variable and the returns that variable
-	/// </summary>
-	public static T Call<T>(this T obj, Action<T> act) { act.Invoke(obj); return obj; }
+	#region Pipe
 
 	/// <summary>
 	/// Pipes 1 functions
 	/// </summary>
-	public static K Pipe<T, K>(this T obj, Func<T, K> fun) => fun(obj);
-
+	public static B Pipe<A,B>(this A obj, Func<A,B> func1) => func1(obj); 
+	
 	/// <summary>
 	/// Pipes 2 functions
 	/// </summary>
-	public static S Pipe<T, K, S>(this T obj, Func<T, K> fun1, Func<K, S> fun2) => fun2(fun1(obj));
+	public static C Pipe<A,B,C>(this A obj, Func<A,B> func1, Func<B,C> func2) => func2(func1(obj)); 
 	
 	/// <summary>
 	/// Pipes 3 functions
 	/// </summary>
-	public static R Pipe<T, K, S, R>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3) => fun3(fun2(fun1(obj)));
-
+	public static D Pipe<A,B,C,D>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3) => func3(func2(func1(obj))); 
+	
 	/// <summary>
 	/// Pipes 4 functions
 	/// </summary>
-	public static G Pipe<T, K, S, R, G>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3, Func<R, G> fun4) => fun4(fun3(fun2(fun1(obj))));
-
+	public static E Pipe<A,B,C,D,E>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4) => func4(func3(func2(func1(obj)))); 
+	
 	/// <summary>
 	/// Pipes 5 functions
 	/// </summary>
-	public static H Pipe<T, K, S, R, G, H>(this T obj, Func<T, K> fun1, Func<K, S> fun2, Func<S, R> fun3, Func<R, G> fun4, Func<G, H> fun5) => fun5(fun4(fun3(fun2(fun1(obj)))));
+	public static F Pipe<A,B,C,D,E,F>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5) => func5(func4(func3(func2(func1(obj))))); 
+	
+	/// <summary>
+	/// Pipes 6 functions
+	/// </summary>
+	public static G Pipe<A,B,C,D,E,F,G>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6) => func6(func5(func4(func3(func2(func1(obj)))))); 
+	
+	/// <summary>
+	/// Pipes 7 functions
+	/// </summary>
+	public static H Pipe<A,B,C,D,E,F,G,H>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7) => func7(func6(func5(func4(func3(func2(func1(obj))))))); 
+	
+	/// <summary>
+	/// Pipes 8 functions
+	/// </summary>
+	public static I Pipe<A,B,C,D,E,F,G,H,I>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8) => func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))); 
+	
+	/// <summary>
+	/// Pipes 9 functions
+	/// </summary>
+	public static J Pipe<A,B,C,D,E,F,G,H,I,J>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9) => func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))); 
+	
+	/// <summary>
+	/// Pipes 10 functions
+	/// </summary>
+	public static K Pipe<A,B,C,D,E,F,G,H,I,J,K>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10) => func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))); 
+	
+	/// <summary>
+	/// Pipes 11 functions
+	/// </summary>
+	public static L Pipe<A,B,C,D,E,F,G,H,I,J,K,L>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11) => func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))); 
+	
+	/// <summary>
+	/// Pipes 12 functions
+	/// </summary>
+	public static M Pipe<A,B,C,D,E,F,G,H,I,J,K,L,M>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11, Func<L,M> func12) => func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))); 
+	
+	/// <summary>
+	/// Pipes 13 functions
+	/// </summary>
+	public static N Pipe<A,B,C,D,E,F,G,H,I,J,K,L,M,N>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11, Func<L,M> func12, Func<M,N> func13) => func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))); 
+	
+	/// <summary>
+	/// Pipes 14 functions
+	/// </summary>
+	public static O Pipe<A,B,C,D,E,F,G,H,I,J,K,L,M,N,O>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11, Func<L,M> func12, Func<M,N> func13, Func<N,O> func14) => func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))); 
+	
+	/// <summary>
+	/// Pipes 15 functions
+	/// </summary>
+	public static P Pipe<A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11, Func<L,M> func12, Func<M,N> func13, Func<N,O> func14, Func<O,P> func15) => func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))); 
+	
+	/// <summary>
+	/// Pipes 16 functions
+	/// </summary>
+	public static Q Pipe<A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q>(this A obj, Func<A,B> func1, Func<B,C> func2, Func<C,D> func3, Func<D,E> func4, Func<E,F> func5, Func<F,G> func6, Func<G,H> func7, Func<H,I> func8, Func<I,J> func9, Func<J,K> func10, Func<K,L> func11, Func<L,M> func12, Func<M,N> func13, Func<N,O> func14, Func<O,P> func15, Func<P,Q> func16) => func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))));
 
-	#endregion	
+	/// <summary>
+	/// Pipes 17 functions
+	/// </summary>
+	public static R Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17) => func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))))));
+
+	/// <summary>
+	/// Pipes 18 functions
+	/// </summary>
+	public static S Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18) => func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 19 functions
+	/// </summary>
+	public static T Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19) => func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 20 functions
+	/// </summary>
+	public static U Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20) => func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 21 functions
+	/// </summary>
+	public static V Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20, Func<U, V> func21) => func21(func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 22 functions
+	/// </summary>
+	public static W Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20, Func<U, V> func21, Func<V, W> func22) => func22(func21(func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 23 functions
+	/// </summary>
+	public static X Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20, Func<U, V> func21, Func<V, W> func22, Func<W, X> func23) => func23(func22(func21(func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 24 functions
+	/// </summary>
+	public static Y Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20, Func<U, V> func21, Func<V, W> func22, Func<W, X> func23, Func<X, Y> func24) => func24(func23(func22(func21(func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj))))))))))))))))))))))));
+
+	/// <summary>
+	/// Pipes 25 functions
+	/// </summary>
+	public static Z Pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>(this A obj, Func<A, B> func1, Func<B, C> func2, Func<C, D> func3, Func<D, E> func4, Func<E, F> func5, Func<F, G> func6, Func<G, H> func7, Func<H, I> func8, Func<I, J> func9, Func<J, K> func10, Func<K, L> func11, Func<L, M> func12, Func<M, N> func13, Func<N, O> func14, Func<O, P> func15, Func<P, Q> func16, Func<Q, R> func17, Func<R, S> func18, Func<S, T> func19, Func<T, U> func20, Func<U, V> func21, Func<V, W> func22, Func<W, X> func23, Func<X, Y> func24, Func<Y, Z> func25) => func25(func24(func23(func22(func21(func20(func19(func18(func17(func16(func15(func14(func13(func12(func11(func10(func9(func8(func7(func6(func5(func4(func3(func2(func1(obj)))))))))))))))))))))))));
+
+	#endregion
+
+	public static J Pipe2<T, K, J>(this ValueTuple<T, K> tuple, Func<T, K, J> func) => func(tuple.Item1, tuple.Item2);
+	
+	public static S Pipe3<T, K, J, S>(this ValueTuple<T, K, J> tuple, Func<T, K, J, S> func) => func(tuple.Item1, tuple.Item2, tuple.Item3);
+
+	#endregion
+
+	#region DistinctBy
 
 	//Gracias Jon Skeet!	
 	public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
@@ -93,14 +185,7 @@ public static class MyExtensions
 		}
 	}
 
-	public static IOrderedEnumerable<IGrouping<char, string>> FieldsByName<T>(this T obj)
-	{
-		return obj.GetType()
-				  .GetFields()
-				  .Select(f => f.Name)
-				  .GroupBy(f => f[0])
-				  .OrderBy(f => f.Key);
-	}
+	#endregion
 
 	#region DumpJson
 
@@ -146,13 +231,164 @@ public static class MyExtensions
 	#endregion
 
 	#region String Extensions
-	
+
 	public static string Concatenate(this IEnumerable<string> auxs)
+		=> Concatenate(auxs, (builder, s) => builder.Append(s));
+
+	public static string ConcatenateLines(this IEnumerable<string> auxs)
+		=> Concatenate(auxs, (builder, s) => builder.AppendLine(s));
+
+	public static string Concatenate(this IEnumerable<string> auxs, Func<StringBuilder, string, StringBuilder> mutate)
+		=> auxs.Aggregate(new StringBuilder(), mutate).ToString();
+
+	#endregion
+
+	#region Tasks Extensions
+
+	/// <summary>
+	/// Continues a Task
+	/// </summary>
+	/// <param name="task"></param>
+	/// <param name="func"></param>	
+	public static Task<K> Then<T, K>(this Task<T> task, Func<T, K> func)
+		=> task.ContinueWith(t => func(t.Result));
+
+	#endregion
+
+	#region Dictionary Helpers
+
+	public static Dictionary<T, K> DictionaryOf<T, K>(this ValueTuple<T, K> tuplePairs)
+	=> new[] { tuplePairs }.DictionaryOf();
+
+	public static Dictionary<T, K> DictionaryOf<T, K>(this ValueTuple<T, K>[] tuplePairs)
+	=> tuplePairs.ToDictionary(k => k.Item1, v => v.Item2);
+
+	#endregion
+
+	#region Apply
+
+	public static S Apply<T, K, S>(this ValueTuple<T, K> tuple, Func<T, K, S> func)
+	=> func(tuple.Item1, tuple.Item2);
+
+	public static R Apply<T, K, S, R>(this ValueTuple<T, K, S> tuple, Func<T, K, S, R> func)
+	=> func(tuple.Item1, tuple.Item2, tuple.Item3);
+
+	public static G Apply<T, K, S, R, G>(this ValueTuple<T, K, S, R> tuple, Func<T, K, S, R, G> func)
+	=> func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
+
+	public static H Apply<T, K, S, R, G, H>(this ValueTuple<T, K, S, R, G> tuple, Func<T, K, S, R, G, H> func)
+	=> func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5);
+
+	public static J Apply<T, K, S, R, G, H, J>(this ValueTuple<T, K, S, R, G, H> tuple, Func<T, K, S, R, G, H, J> func)
+	=> func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
+
+	#endregion
+
+	#region Closure
+
+	public static Func<S> Closure<T, K, S>(this ValueTuple<T, K> tuple, Func<T, K, S> func)
+	=> () => func(tuple.Item1, tuple.Item2);
+
+	public static Func<R> Closure<T, K, S, R>(this ValueTuple<T, K, S> tuple, Func<T, K, S, R> func)
+	=> () => func(tuple.Item1, tuple.Item2, tuple.Item3);
+
+	public static Func<G> Closure<T, K, S, R, G>(this ValueTuple<T, K, S, R> tuple, Func<T, K, S, R, G> func)
+	=> () => func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
+
+	public static Func<H> Closure<T, K, S, R, G, H>(this ValueTuple<T, K, S, R, G> tuple, Func<T, K, S, R, G, H> func)
+	=> () => func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5);
+
+	public static Func<J> Closure<T, K, S, R, G, H, J>(this ValueTuple<T, K, S, R, G, H> tuple, Func<T, K, S, R, G, H, J> func)
+	=> () => func(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
+
+	#endregion
+
+	#region Fields Extensions
+
+	public static Dictionary<string, string> FieldsToDictionary(this object obj)
+	=> obj.GetType()
+		  .GetFields()
+		  .Select(f => new { f.Name, Value = f.GetValue(obj)?.ToString() })
+		  .ToDictionary(a => a.Name, a => a.Value);
+
+	public static IOrderedEnumerable<IGrouping<char, string>> FieldsByName<T>(this T obj)
 	{
-		return auxs.Aggregate(new StringBuilder(), (builder, s) => builder.Append(s)).ToString();
+		return obj.GetType()
+				  .GetFields()
+				  .Select(f => f.Name)
+				  .GroupBy(f => f[0])
+				  .OrderBy(f => f.Key);
 	}
 
 	#endregion
+
+	#region ChunkBy
+
+	public static List<List<T>> ChunkBy<T>(this IEnumerable<T> elements, Func<T, int, bool> predicate, bool includeSeparator = false)
+	{
+		var acum = new List<T>();
+		var all = new List<List<T>>();
+		var count = 0;
+
+		foreach (var element in elements)
+		{
+			if (predicate(element, count))
+			{
+				if (includeSeparator)
+					acum.Add(element);
+
+				all.Add(acum.ToList());
+				acum = new List<T>();
+			}
+			else
+			{
+				acum.Add(element);
+			}
+
+			count++;
+		}
+
+		all.Add(acum);
+
+		return all;
+	}
+
+	#endregion
+	
+	#region XmlExtensions
+	
+    public static XmlDocument ToXmlDocument(this XDocument xDocument)
+	{
+            var xmlDocument = new XmlDocument();
+
+            using (var xmlReader = xDocument.CreateReader())
+            {
+                xmlDocument.Load(xmlReader);
+            }
+
+            return xmlDocument;
+	}
+
+        public static IEnumerable<XmlNode> GetNodes(this XmlNodeList nodelist)
+        {
+	            foreach (var element in nodelist)
+		            {
+		yield return (XmlNode)element;
+		            }
+	       }
+
+        public static T FromXml<T>(this string sXml)
+        {
+	           using (var reader = new StringReader(sXml))
+		            {
+		var serializer = new XmlSerializer(typeof(T));
+		                return (T)serializer.Deserialize(reader);
+		            }
+	        }
+	
+	#endregion
+
+	public static object ObjectOf<T>(this T arg) => (object)arg;
 }
 
 #endregion
@@ -169,7 +405,7 @@ public static class MyUtils
 	public static string DesktopPath { get { return desktopPath; } }
 
 	public static string CDiskPath { get { return Path.GetPathRoot(Environment.SystemDirectory); } }
-	
+
 	public static string MyQueriesPath { get { return @"C:\Users\tcordara\Documents\LINQPad Queries"; } }
 
 	public static string MyExtensionsPath
@@ -214,15 +450,9 @@ public static class MyUtils
 	
 	#region MakeArray
 	
-	public static T[] MakeArray<T>(params T[] arr)
-	{
-		return arr;
-	}
+	public static T[] MakeArray<T>(params T[] arr) => arr;
 	
-	public static List<T> MakeList<T>(params T[] arr)
-	{
-		return arr.ToList();
-	}
+	public static List<T> MakeList<T>(params T[] arr) => arr.ToList();
 
 	#endregion
 
@@ -230,10 +460,7 @@ public static class MyUtils
 
 	//Bind-alike implementation (!?)
 	public static async Task<K> MakeTask<T,K>(Task<T> task, Func<T,K> func)
-	{
-		var result = await task;
-		return func(result);
-}
+		=> func(await task);
 
 	#endregion
 	
@@ -256,14 +483,12 @@ public static class MyUtils
 	#region Randoms
 	
 	public static bool RandomBool()
-	{
-		return Guid.NewGuid()
-		           .ToString()
-				   .ToCharArray()
-				   .Where(char.IsNumber)
-				   .First()
-				   .Project(n => n % 2 == 0);		
-	}
+		=> Guid.NewGuid()
+		   	   .ToString()
+		   	   .ToCharArray()
+		       .Where(char.IsNumber)
+		   	   .First()
+		   	   .Pipe(n => n % 2 == 0);		
 	
 	public static IEnumerable<string> InfiniteSeq(Seq? config = null)
 	{
@@ -292,11 +517,11 @@ public static class MyUtils
 				break;
 		}
 		
-		var getLetterOrDigit = MakeFunc(() => Guid.NewGuid()
-												  .ToString()
-												  .ToCharArray()
-												  .Where(Config)
-												  .Select(c => c.ToString()));
+		IEnumerable<string> getLetterOrDigit () => Guid.NewGuid()
+												  	   .ToString()
+												  	   .ToCharArray()
+												  	   .Where(Config)
+												  	   .Select(c => c.ToString());
 
 		while (true)
 		{
@@ -324,60 +549,24 @@ public static class MyUtils
 
 	#region Enums
 
-	public static IEnumerable<T> GetEnums<T>()
-	{
-		var type = typeof(T);
-		if (!type.IsEnum)
-		{
-			throw new ArgumentException("The type is not and enum type");
-		}
-
-		return Enum.GetValues(type).Cast<T>();
-	}
+	public static IEnumerable<T> GetEnums<T>() where T : System.Enum 
+		=> Enum.GetValues(typeof(T)).Cast<T>();
 	
-	public static T ToEnum<T>(this string s) where T : struct
-	{
-		var type = typeof(T);
-		if (!type.IsEnum)
-		{
-			throw new ArgumentException("The type is not and enum type");
-		}
-		
-		return (T)Enum.Parse(typeof(T), s);
-	}
-
-	public static T ToEnum2<T>(this string sValue) where T : struct
-	{
-		T option = default(T);
-		int intEnumValue;
-		if (Int32.TryParse(sValue, out intEnumValue))
-		{
-			if (Enum.IsDefined(typeof(T), intEnumValue))
-			{
-				if (Enum.TryParse(sValue, out option))
-				{
-					return option;
-				}
-			}
-		}
-
-		return option;
-	}
+	public static T ToEnum<T>(this string s) where T : System.Enum 
+		=> (T)Enum.Parse(typeof(T), s);
+	
 	#endregion
 
 	#region Txt Read/Write
 
 	public static IEnumerable<string> ReadTxtFromDesktop(string fileName)
-	{
-		return _ReadTxt(fileName, true);
-	}
+		=> _ReadTxt(fileName, true);
+
 
 	public static IEnumerable<string> ReadTxt(string fileName)
-	{
-		return _ReadTxt(fileName, false);
-	}
-
-	private static IEnumerable<string> _ReadTxt(string fileName, bool fromDesktop)
+		=> _ReadTxt(fileName, false);
+	
+	static IEnumerable<string> _ReadTxt(string fileName, bool fromDesktop)
 	{
 		string line;
 		var path = fromDesktop ? Path.Combine(desktopPath, fileName) : fileName;
@@ -390,7 +579,7 @@ public static class MyUtils
 		}
 	}
 
-	public static void WriteTxtToDesktop(IEnumerable<string> lines, string filename = null, bool append = true)
+	public static bool WriteTxtToDesktop(IEnumerable<string> lines, string filename = null, bool append = true)
 	{
 		filename = filename ?? "archivo.txt";
 
@@ -399,15 +588,19 @@ public static class MyUtils
 			foreach (string line in lines)
 				outputFile.WriteLine(line);
 		}
+		
+		return true;
 	}
 
-	public static void WriteTxt(IEnumerable<string> lines, string filename = null, bool append = true)
+	public static bool WriteTxt(IEnumerable<string> lines, string filename = null, bool append = true)
 	{
 		using (var outputFile = new StreamWriter(filename, append))
 		{
 			foreach (string line in lines)
 				outputFile.WriteLine(line);
 		}
+		
+		return true;
 	}
 
 	#endregion
@@ -415,8 +608,11 @@ public static class MyUtils
 	#region JSON Read/Write
 
 	public static Newtonsoft.Json.Linq.JObject ReadJSONObjectFromDesktop(string fileName)
+		=> ReadJSONObject(Path.Combine(desktopPath, fileName));
+
+	public static Newtonsoft.Json.Linq.JObject ReadJSONObject(string filePath)
 	{
-		var fileStream = new FileStream(Path.Combine(desktopPath, fileName), FileMode.Open, FileAccess.Read);
+		var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
 		using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
 		{
@@ -426,15 +622,7 @@ public static class MyUtils
 	}
 
 	public static Newtonsoft.Json.Linq.JArray ReadJSONArrayFromDesktop(string fileName)
-	{
-		var fileStream = new FileStream(Path.Combine(desktopPath, fileName), FileMode.Open, FileAccess.Read);
-
-		using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-		{
-			var reader = new JsonTextReader(new StringReader(streamReader.ReadToEnd()));
-			return JArray.Load(reader);
-		}
-	}
+		=> ReadJSONArray(Path.Combine(desktopPath, fileName));
 
 	public static Newtonsoft.Json.Linq.JArray ReadJSONArray(string fileName)
 	{
@@ -495,7 +683,7 @@ public static class MyUtils
 		return xml;
 	}
 
-	public static T FromXML<T>(string sXml)
+	public static T FromXml<T>(string sXml)
 	{
 		try
 		{
@@ -522,15 +710,12 @@ public static class MyUtils
 
 	#region File Opener
 
-	public static void OpenFile(string filePath)
-	{
-		System.Diagnostics.Process.Start(filePath);
-	}
+	public static Process OpenFile(string filePath)
+		=> System.Diagnostics.Process.Start(filePath);
+	
+	public static Process OpenFileFromDesktop(string fileName)
+		=> System.Diagnostics.Process.Start(Path.Combine(desktopPath, fileName));
 
-	public static void OpenFileFromDesktop(string fileName)
-	{
-		System.Diagnostics.Process.Start(Path.Combine(desktopPath, fileName));
-	}
 
 	#endregion
 
@@ -580,29 +765,26 @@ public static class MyUtils
 	#region String Manipulation
 	
 	public static IEnumerable<string> SplitBy(this string auxs, params char[] separators)
-	{
-		return auxs.Split(separators);
-	}
+		=> auxs.Split(separators);
+
 	
 	public static IEnumerable<string> SplitBy(this string auxs, params string[] separators)
-	{
-		return auxs.Split(separators, StringSplitOptions.None);
-	}
+		=> auxs.Split(separators, StringSplitOptions.None);
 
 	public static IEnumerable<IEnumerable<string>> SplitByTab(this IEnumerable<string> rows)
-	{
-		return rows.Select(s => s.SplitBy(new char[] { '\t' }));
-	}
+		=> rows.Select(s => s.SplitBy(new char[] { '\t' }));
 
 	public static string CleanFileName(this string fileName)
-	{
-		return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
-	}
+		=> Path.GetInvalidFileNameChars()
+			   .Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 	
 	public static string RandomName(int numberOfLetters)
-	{
-		return Guid.NewGuid().ToString().ToCharArray().Where(c => char.IsLetterOrDigit(c)).Take(numberOfLetters).Project(string.Concat);	
-	}
+		=> Guid.NewGuid()
+			   .ToString()
+			   .ToCharArray()
+			   .Where(char.IsLetterOrDigit)
+			   .Take(numberOfLetters)
+			   .Pipe(string.Concat);	
 
 	public static List<List<string>> ToMatrix<T>(this IEnumerable<T> items)
 	{
@@ -623,7 +805,7 @@ public static class MyUtils
 	
 	#region Excel Generation
 	
-	public static void GenerateExcel(IEnumerable<IEnumerable<string>> matrix, string path)
+	public static void GenerateExcel(IEnumerable<IEnumerable<string>> matrix, string path, bool openGenerated = true)
 	{
 		var workbook = new HSSFWorkbook();
 		var sheet = workbook.CreateSheet();
@@ -653,10 +835,10 @@ public static class MyUtils
 			workbook.Write(xfile);
 		}
 
-		var msj = "Workbook generated successfully";		
-		msj.Dump();
+		"Workbook generated successfully".Dump();		
 		
-		OpenFile(path);
+		if(openGenerated)
+			OpenFile(path);
 	}
 
 	public static void GenerateExcelToDesktop(IEnumerable<IEnumerable<string>> matrix, string fileName)
@@ -723,9 +905,7 @@ public static class MyUtils
 	#region Date Related
 
 	public static string DateAsFileName()
-	{
-		return string.Concat("_", DateTime.Now.ToString().SplitBy('/').Project(s => string.Join("-", s)));
-	}
+		=> string.Concat("_", DateTime.Now.ToString().SplitBy('/').Pipe(s => string.Join("-", s)));
 
 	#endregion
 
@@ -784,7 +964,204 @@ public static class MyUtils
 		return results.ToList();
 	}
 	
+	public static async Task<XmlDocument> ExecuteXmlPostRequestAsync(string _url, XmlDocument xmlRequest, Dictionary<string, string> headers = null)
+	{
+		var httpWebRequest = (HttpWebRequest)WebRequest.Create(_url);
+		httpWebRequest.ContentType = "text/xml";
+		httpWebRequest.Method = "POST";
+
+		if (headers != null)
+		{
+			foreach (var header in headers)
+			{
+				httpWebRequest.Headers.Add(header.Key, header.Value);
+			}
+		}
+
+		using (var stream = await Task.Factory.FromAsync(httpWebRequest.BeginGetRequestStream,
+																  httpWebRequest.EndGetRequestStream, null))
+		{
+			var requestAsBytes = Encoding.Default.GetBytes(xmlRequest.OuterXml);
+
+			await stream.WriteAsync(requestAsBytes, 0, requestAsBytes.Length);
+		}
+
+		using (var responseObject = await Task.Factory.FromAsync(httpWebRequest.BeginGetResponse,
+																			httpWebRequest.EndGetResponse, httpWebRequest))
+		{
+			var responseXml = new XmlDocument();
+			responseXml.Load(responseObject.GetResponseStream());
+			return responseXml;
+		}
+	}
+
 	#endregion
+
+	#region Rest Requests
+	
+	public static class Http
+	{
+		public static async Task<IRestResponse> Post(string url, object body = null, Dictionary<string, object> parameters = null, Dictionary<string, string> headers = null)
+		{
+			var client = new RestClient(new Uri(url));
+
+			var request = new RestRequest(Method.POST) { RequestFormat = DataFormat.Json };
+
+			if (headers != null)
+			{
+				foreach (var header in headers)
+				{
+					request.AddHeader(header.Key, header.Value);
+				}
+			}
+
+			if (parameters != null)
+			{
+				foreach (var parameter in parameters)
+				{
+					request.AddParameter(parameter.Key, parameter.Value, ParameterType.HttpHeader);
+				}
+			}
+
+			if (body != null)
+				request.AddBody(body);
+
+			return await client.ExecuteTaskAsync(request);
+		}
+
+		public static async Task<IRestResponse> Post(string access_token, string url, object parameter)
+		{
+			var client = new RestClient(new Uri(url));
+
+			var request = new RestRequest(Method.POST);
+
+			request.AddHeader("Content-Type", "application/json");
+
+			request.AddParameter("Authorization", "Bearer " + access_token, ParameterType.HttpHeader);
+			request.AddParameter("application/json", parameter, ParameterType.RequestBody);
+
+			return await client.ExecuteTaskAsync(request);
+		}
+
+		public static async Task<IRestResponse> Get(string access_token, string url, object parameter)
+		{
+			var client = new RestClient(new Uri(url));
+
+			var request = new RestRequest(Method.GET);
+
+			request.AddHeader("Content-Type", "application/json");
+
+			request.AddParameter("Authorization", "Bearer " + access_token, ParameterType.HttpHeader);
+			request.AddParameter("application/json", parameter, ParameterType.RequestBody);
+
+			return await client.ExecuteTaskAsync(request);
+		}
+	}
+
+	#endregion
+
+	#region Is Prime
+
+	public static bool IsPrime(int n)
+		=> n > 1 ? Enumerable.Range(1, n)
+							 .Where(x => n % x == 0)
+							 .SequenceEqual(new [] { 1, n }) 
+				 : false;
+
+	#endregion
+
+	public static DataTable GetDataTableFromExcel(String Path, int sheetNumber = 0)
+	{
+		XSSFWorkbook wb;
+		XSSFSheet sh;
+		String Sheet_name;
+
+		using (var fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
+		{
+			wb = new XSSFWorkbook(fs);
+
+			Sheet_name = wb.GetSheetAt(sheetNumber).SheetName;  //get first sheet name
+		}
+		DataTable DT = new DataTable();
+		DT.Rows.Clear();
+		DT.Columns.Clear();
+
+		// get sheet
+		sh = (XSSFSheet)wb.GetSheet(Sheet_name);
+
+		int i = 0;
+		while (sh.GetRow(i) != null)
+		{
+			// add neccessary columns
+			if (DT.Columns.Count < sh.GetRow(i).Cells.Count)
+			{
+				for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
+				{
+					DT.Columns.Add("", typeof(string));
+				}
+			}
+
+			// add row
+			DT.Rows.Add();
+
+			// write row value
+			for (int j = 0; j < sh.GetRow(i).Cells.Count; j++)
+			{
+				var cell = sh.GetRow(i).GetCell(j);
+
+				if (cell != null)
+				{
+					// TODO: you can add more cell types capatibility, e. g. formula
+					switch (cell.CellType)
+					{
+						case NPOI.SS.UserModel.CellType.Numeric:
+							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).NumericCellValue;
+							//dataGridView1[j, i].Value = sh.GetRow(i).GetCell(j).NumericCellValue;
+
+							break;
+						case NPOI.SS.UserModel.CellType.String:
+							DT.Rows[i][j] = sh.GetRow(i).GetCell(j).StringCellValue;
+
+							break;
+					}
+				}
+			}
+
+			i++;
+		}
+
+		return DT;
+	}
+	
+	public static class IO
+	{
+		public static List<string> GetDirectoriesRecursive(string parent)
+		{
+			var directories = new List<string>();
+			GetDirectoriesRecursive(directories, parent);
+			return directories;
+		}
+
+		public static void GetDirectoriesRecursive(List<string> directories, string parent)
+		{
+			directories.Add(parent);
+			foreach (string child in GetAuthorizedDirectories(parent))
+				GetDirectoriesRecursive(directories, child);
+		}
+
+		public static string[] GetAuthorizedDirectories(string dir)
+		{
+			try { return Directory.GetDirectories(dir); }
+			catch (UnauthorizedAccessException) { return new string[0]; }
+		}
+
+		public static string[] GetAuthorizedFiles(string dir)
+		{
+			try { return Directory.GetFiles(dir); }
+			catch (UnauthorizedAccessException) { return new string[0]; }
+		}
+
+	}
 }
 
 #endregion
@@ -923,6 +1300,25 @@ public class ClassBuilder
 		return Activator.CreateInstance(type);
 	}
 
+	public object CreateObjectWithProps(Dictionary<string, string> props)
+	{
+		TypeBuilder DynamicClass = this.CreateClass();
+		this.CreateConstructor(DynamicClass);
+		
+		foreach (var prop in props)
+		{
+			CreateProperty(DynamicClass, prop.Key, typeof(string));
+		}
+
+		Type type = DynamicClass.CreateType();
+
+		var instance = Activator.CreateInstance(type);
+		
+		instance.SetProps(props.Select(p => p.Value));
+		
+		return instance;
+	}
+
 	private TypeBuilder CreateClass()
 	{
 		AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(this.asemblyName, AssemblyBuilderAccess.Run);
@@ -981,14 +1377,14 @@ public class ClassBuilder
 
 public static class ClassBuilderExtensions
 {
-	public static List<string> SetProps<T>(this T obj, IEnumerable<string> propsValues)
+	public static void SetProps<T>(this T obj, IEnumerable<T> propsValues)
 	{
-		return obj.GetType()
+				obj.GetType()
 				  .GetProperties()
 				  .Zip(propsValues, (prop, result) =>
 				  {
 				  		prop.SetValue(obj, result);
-						return string.Format("prop: {0}, value: {1}", prop.Name, result);
+						return string.Empty;
 				  })
 				  .ToList();
 	}
@@ -1010,6 +1406,7 @@ public static class ClassBuilderExtensions
 		return instance;
 	}
 }
+
 #endregion
 
 #region Tasker
@@ -1061,6 +1458,8 @@ public static class Tasker
 		public DateTime? End { get; set; }
 
 		public TimeSpan? Lapsus { get => End - Start; }
+
+		public int? Days { get => Lapsus?.Days; }
 	}
 
 	public static class Paths
@@ -1100,6 +1499,10 @@ public static class Tasker
 		{
 			"Directory already exists!".Dump();
 		}
+		else if(Directory.Exists(Path.Combine(Paths.DONE_Folder, creator.FolderName)))
+		{
+			"Task already exists in DONE!".Dump();
+		}
 		else
 		{
 			//Task folder
@@ -1109,20 +1512,20 @@ public static class Tasker
 			var metaTxtName = string.Concat(directoryName, "/", "meta.txt");
 
 			var separator = Enumerable.Range(0, 60)
-									   .Select(r => "*")
-									   .Aggregate(new StringBuilder(), (builder, s) => builder.Append(s))
-									   .ToString()
-									   .Project(r => string.Concat("/", r, "/"));
+									  .Select(r => "*")
+									  .Aggregate(new StringBuilder(), (builder, s) => builder.Append(s))
+									  .ToString()
+									  .Pipe(r => string.Concat("/", r, "/"));
 
 			var items = new List<string>();
 
-			var description = creator.Description.All(string.IsNullOrEmpty) ? "*No Description*".AsArray().ToList() : creator.Description;
+			var description = creator.Description.All(string.IsNullOrEmpty) ? "*No Description*".Pipe(s => new[] { s }).ToList() : creator.Description;
 
 			items.AddRange(description);
 			
 			var taskUrl = "https://efficienttech.atlassian.net/browse/" + creator.ID; 
 			
-			items.AddRange(new string[]{string.Empty, "Url: ",taskUrl, string.Empty});
+			items.AddRange(new string[]{ string.Empty, "Url: ",taskUrl, string.Empty });
 
 			items.AddRange(new string[] { string.Empty, separator, string.Empty, "Status: ", string.Empty });
 
@@ -1130,7 +1533,7 @@ public static class Tasker
 			MyUtils.WriteTxt(items, txtName);
 
 			//Meta txt
-			MyUtils.WriteTxt(creator.MetaObj.Project(JsonConvert.SerializeObject).AsArray(), metaTxtName);
+			MyUtils.WriteTxt(creator.MetaObj.Pipe(JsonConvert.SerializeObject).Pipe(s => new[] { s }), metaTxtName);
 
 			MyUtils.OpenFile(txtName);
 
@@ -1160,7 +1563,7 @@ public static class Tasker
 				meta.End = DateTime.Now;
 
 				//Modificar el archivo 'meta', agregándole el 'End' date
-				MyUtils.WriteTxt(JsonConvert.SerializeObject(meta).ToString().AsArray(), metaPath, false);
+				MyUtils.WriteTxt(JsonConvert.SerializeObject(meta).ToString().Pipe(s => new[] { s }), metaPath, false);
 			}
 
 			var newPath = string.Concat(destinationFolder, @"\", folder.Name);
