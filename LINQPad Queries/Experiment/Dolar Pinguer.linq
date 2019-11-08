@@ -21,7 +21,7 @@
 
 async Task Main()
 {
-	var milliseconds = new TimeSpan(0, 0, 15).TotalMilliseconds.Project(Convert.ToInt32);
+	var milliseconds = new TimeSpan(0, 0, 15).TotalMilliseconds.Pipe(Convert.ToInt32);
 	
 	var stop = new TimeSpan(18, 30, 0);	
 	
@@ -29,11 +29,14 @@ async Task Main()
 	
 	bool writeToTxt = false;
 
-	Action action = () => Cotizar().ContinueWith(t => t.Result.ToString().Dump().Call((s) => { if (writeToTxt) MyUtils.WriteTxtToDesktop(s.AsArray(), fileName); }))
+	void Cotización()
+	{
+		Cotizar().Then(t => t.ToString().Dump().Call((s) => { if (writeToTxt) MyUtils.WriteTxtToDesktop(s.Pipe(a => new[] { a }), fileName); }))
 								   .Wait();
+	}
 
 	//Remember: ctrl + shift + f5 for 'Query Process Unload'
-	await MyUtils.SetIntervalAsync(milliseconds, stop, action);		
+	await MyUtils.SetIntervalAsync(milliseconds, stop, Cotización);		
 }
 
 public async Task<DolarServiceResponse> Cotizar()
@@ -42,11 +45,8 @@ public async Task<DolarServiceResponse> Cotizar()
 
 	var request = new RestRequest("Principal/Dolar", Method.GET).AddHeader("Accept", "application/json");
 
-	//request.AddHeader("Accept", "application/json");
-
-	var response = await clienteBanco.ExecuteTaskAsync(request);
-
-	return JArray.Parse(response.Content).ToObject<string[]>().Project(r => new DolarServiceResponse(r));
+	return (await clienteBanco.ExecuteTaskAsync(request))					
+					.Pipe(t => t.Content, JArray.Parse, j => j.ToObject<string[]>(), r => new DolarServiceResponse(r));	
 }
 
 public class DolarServiceResponse

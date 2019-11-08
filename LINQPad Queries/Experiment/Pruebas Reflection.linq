@@ -21,7 +21,7 @@ public class Indicadores
         public string[] Inspectores { get; set; }
 		
 		public string Hablar(){
-		return "Hola";
+			return FechaInspeccionDesde.ToString();
 		}
     }
 // Define other methods and classes here

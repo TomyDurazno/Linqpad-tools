@@ -4,7 +4,7 @@ void Main()
 {
 	var rnd = new Random();
 	
-	Enumerable.Range(0,1000).Select(e => GetPass(rnd)).Where(s => !string.IsNullOrEmpty(s)).Project(a => string.Join(",",a)).Dump();
+	Enumerable.Range(0,1000).Select(e => GetPass(rnd)).Where(s => !string.IsNullOrEmpty(s)).Pipe(a => string.Join(",",a)).Dump();
 }
 
 public static string GetPass(Random rnd)
