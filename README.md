@@ -30,4 +30,6 @@ Includes:
 
 - TaskCounter (Measure time execution of a task)
 
+- Pipe Extension
+
 Experiment: folder with numerous examples of cool things you can do using C#
