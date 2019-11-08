@@ -18,7 +18,7 @@ Includes:
 
 - XML Read/Write
 
-- Excel generator
+- Excel (Reading and generation)
 
 - DB/SQL (for dinamically write SQL queries)
 
