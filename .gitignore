@@ -1,5 +1,5 @@
 # Don't track content of these folders
 LINQPad Queries/ETI
-LINQPad Plugins\Framework 4.6\MyExtensions.FW46.dll
-LINQPad Plugins\Framework 4.6\MyExtensions.FW46.pdb
-LINQPad Plugins\Framework 4.6\MyExtensions.FW46.xml
+Framework 4.6/MyExtensions.FW46.dll
+Framework 4.6/MyExtensions.FW46.pdb
+Framework 4.6/MyExtensions.FW46.xml
