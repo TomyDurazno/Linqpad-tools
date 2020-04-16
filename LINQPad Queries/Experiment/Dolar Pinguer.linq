@@ -12,28 +12,26 @@
   <Reference>&lt;RuntimeDirectory&gt;\System.Web.Services.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Windows.Forms.dll</Reference>
   <NuGetReference>RestSharp</NuGetReference>
-  <Namespace>System.Threading.Tasks</Namespace>
-  <Namespace>System.Web.Script.Serialization</Namespace>
-  <Namespace>RestSharp</Namespace>
   <Namespace>Newtonsoft.Json.Linq</Namespace>
+  <Namespace>RestSharp</Namespace>
   <Namespace>System.Reactive.Linq</Namespace>
+  <Namespace>System.Threading.Tasks</Namespace>
+  <Namespace>System.Web</Namespace>
 </Query>
 
 async Task Main()
 {
 	var milliseconds = new TimeSpan(0, 0, 15).TotalMilliseconds.Pipe(Convert.ToInt32);
-	
-	var stop = new TimeSpan(18, 30, 0);	
-	
+
+	var stop = new TimeSpan(18, 30, 0);
+
 	var fileName = "DolarHoy.txt";
-	
+
 	bool writeToTxt = false;
 
-	void Cotización()
-	{
-		Cotizar().Then(t => t.ToString().Dump().Call((s) => { if (writeToTxt) MyUtils.WriteTxtToDesktop(s.Pipe(a => new[] { a }), fileName); }))
-								   .Wait();
-	}
+	void WriteTxt(string s){ if (writeToTxt) MyUtils.WriteTxtToDesktop(s.Pipe(a => new[] { a }), fileName); }
+
+	void Cotización() => Cotizar().Then(t => t.ToString().Dump().Mutate(WriteTxt)).Wait();
 
 	//Remember: ctrl + shift + f5 for 'Query Process Unload'
 	await MyUtils.SetIntervalAsync(milliseconds, stop, Cotización);		
@@ -45,7 +43,7 @@ public async Task<DolarServiceResponse> Cotizar()
 
 	var request = new RestRequest("Principal/Dolar", Method.GET).AddHeader("Accept", "application/json");
 
-	return (await clienteBanco.ExecuteTaskAsync(request))					
+	return (await clienteBanco.ExecuteAsync(request))					
 					.Pipe(t => t.Content, JArray.Parse, j => j.ToObject<string[]>(), r => new DolarServiceResponse(r));	
 }
 
