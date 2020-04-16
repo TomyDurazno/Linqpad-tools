@@ -14,15 +14,12 @@
   <Namespace>NPOI.HSSF.UserModel</Namespace>
   <Namespace>NPOI.XSSF.UserModel</Namespace>
   <Namespace>RestSharp</Namespace>
-  <Namespace>System.Collections.Generic</Namespace>
   <Namespace>System.Dynamic</Namespace>
-  <Namespace>System.Linq</Namespace>
   <Namespace>System.Net</Namespace>
-  <Namespace>System.Reflection</Namespace>
   <Namespace>System.Reflection.Emit</Namespace>
-  <Namespace>System.Text</Namespace>
   <Namespace>System.Threading.Tasks</Namespace>
   <Namespace>System.Xml.Serialization</Namespace>
+  <Namespace>System.Runtime.InteropServices</Namespace>
 </Query>
 
 void Main() { }
@@ -465,6 +462,27 @@ public static class MyExtensions
 	#endregion
 
 	public static object ObjectOf<T>(this T arg) => (object)arg;
+	
+	public static dynamic AsDynamic(this object obj, bool recursive = false)
+	{
+		var dyn = new ExpandoObject();
+
+		Type GetStaticType<T>(T x) => typeof(T);
+
+		var props = GetStaticType(obj).GetProperties()
+									  .Select(p => new { p.Name, Value = recursive ? p.GetValue(obj).AsDynamic(recursive) : p.GetValue(obj) });
+
+		var dict = dyn as IDictionary<string, object>;
+
+		foreach (var prop in props)
+		{
+			dict.Add(prop.Name, prop.Value);
+		}
+		
+		return dyn;
+	}
+	
+	public static T DynamicClone<T>(this T obj) where T : class => (T) obj.AsDynamic(); 
 }
 
 #endregion
@@ -1205,6 +1223,18 @@ public static class MyUtils
 
 			return await client.ExecuteTaskAsync(request);
 		}
+		
+		public static async Task<IRestResponse> Get(string url)
+		{
+			var client = new RestClient(new Uri(url));
+
+			var request = new RestRequest(Method.GET);
+
+			request.AddHeader("Content-Type", "application/json");
+			request.AddParameter("application/json", ParameterType.RequestBody);
+
+			return await client.ExecuteTaskAsync(request);
+		}
 	}
 
 	#endregion
@@ -1252,6 +1282,63 @@ public static class MyUtils
 	}
 
 	#endregion
+	
+	#region MakeExceptionable
+
+	public static Func<(T element, Exception exception)> MakeExceptionable<T>(Func<T> func)
+	{
+		(T element, Exception exception) f()
+		{
+			try
+			{
+				return (func(), null);
+			}
+			catch (Exception ex)
+			{
+				return (default(T), ex);
+			}
+		};
+
+		return f;
+	}
+
+	#endregion
+
+	#region OpenBrowser
+
+	public static void OpenBrowser(string url)
+	{
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		{
+			var p = new Process();
+			p.StartInfo = new ProcessStartInfo(url)
+			{
+				UseShellExecute = true
+			};
+			p.Start();
+		}
+		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+		{
+			Process.Start("xdg-open", url);  // Works ok on linux
+		}
+		else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		{
+			Process.Start("open", url); // Not tested
+		}
+		else
+		{
+		
+    	}
+	}
+
+	#endregion
+	
+	public static K Mute<T, K>(this T element, Func<K> func, Action<T, K> fx)
+	{
+		var seed = func();
+		fx(element, seed);
+		return seed;
+	}
 }
 
 #endregion
@@ -1361,7 +1448,7 @@ public struct DateTimeSpan
 #endregion
 
 #region ClassBuilder 
-
+/*
 public class ClassBuilder
 {
 	AssemblyName asemblyName;
@@ -1496,196 +1583,7 @@ public static class ClassBuilderExtensions
 		return instance;
 	}
 }
-
-#endregion
-
-#region Tasker
-
-public static class Tasker
-{
-	#region Class declarations
-
-	public enum Do
-	{
-		Create,
-		Move
-	}
-
-	public enum Destination
-	{
-		DONE,
-		REMOVED,
-		TESTING
-	}
-
-	public class CreatorArgs
-	{
-		public string ID { get; set; }
-		public string Name { get; set; }
-		public IEnumerable<string> Description { get; set; }
-		public Meta MetaObj { get; set; }
-
-		public CreatorArgs() { }
-
-		public CreatorArgs(string id, string name, IEnumerable<string> description, Meta metaobj)
-		{
-			ID = id;
-			Name = name;
-			Description = description;
-			MetaObj = metaobj;
-		}
-
-		public string FolderName { get => ID + " - " + Name; }
-
-		public string TaskName { get => "Task " + ID + ".txt"; }
-	}
-
-	public class Meta
-	{
-		public DateTime Start { get; set; }
-		public string Client { get; set; }
-		public string Leader { get; set; }
-		public DateTime? End { get; set; }
-
-		public TimeSpan? Lapsus { get => End - Start; }
-
-		public int? Days { get => Lapsus?.Days; }
-	}
-
-	public static class Paths
-	{
-		public static string Tasks_Folder = MyUtils.DesktopPath + "/ETIDATA/Tasks";
-
-		public static string DONE_Folder = MyUtils.DesktopPath + "/ETIDATA/Tasks/DONE";
-		
-		public static string ETIDATA = MyUtils.DesktopPath + "/ETIDATA/";
-	}
-
-	#endregion
-
-	#region Methods
-
-	public static CreatorArgs MakeCreator(string ID, string Name, string Leader)
-	{
-		return new Tasker.CreatorArgs()
-		{
-			ID = ID,
-			Name = Name,
-			Description = MyUtils.ReadTxtFromDesktop("description.txt"),
-			MetaObj = new Tasker.Meta() { Start = DateTime.Now, Client = "ETI", Leader = Leader }
-		};
-	}
-
-	public static void Create(string ID, string Name, string Leader = "Tebi")
-	{
-		Create(MakeCreator(ID, Name, Leader));
-	}
-
-	public static void Create(CreatorArgs creator)
-	{
-		#region Implementation
-
-		var directoryName = Path.Combine(Paths.Tasks_Folder, creator.FolderName);
-
-		if (Directory.Exists(directoryName))
-		{
-			"Directory already exists!".Dump();
-		}
-		else if(Directory.Exists(Path.Combine(Paths.DONE_Folder, creator.FolderName)))
-		{
-			"Task already exists in DONE!".Dump();
-		}
-		else
-		{
-			//Task folder
-			Directory.CreateDirectory(directoryName);
-
-			var txtName = string.Concat(directoryName, "/", creator.TaskName);
-			var metaTxtName = string.Concat(directoryName, "/", "meta.txt");
-
-			var separator = Enumerable.Range(0, 60)
-									  .Select(r => "*")
-									  .Aggregate(new StringBuilder(), (builder, s) => builder.Append(s))
-									  .ToString()
-									  .Pipe(r => string.Concat("/", r, "/"));
-
-			var items = new List<string>();
-
-			var description = creator.Description.All(string.IsNullOrEmpty) ? "*No Description*".Pipe(s => new[] { s }).ToList() : creator.Description;
-
-			items.AddRange(description);
-			
-			var taskUrl = "https://efficienttech.atlassian.net/browse/" + creator.ID; 
-			
-			items.AddRange(new string[]{ string.Empty, "Url: ",taskUrl, string.Empty });
-
-			items.AddRange(new string[] { string.Empty, separator, string.Empty, "Status: ", string.Empty });
-
-			//Task txt
-			MyUtils.WriteTxt(items, txtName);
-
-			//Meta txt
-			MyUtils.WriteTxt(creator.MetaObj.Pipe(JsonConvert.SerializeObject).Pipe(s => new[] { s }), metaTxtName);
-
-			MyUtils.OpenFile(txtName);
-
-			"Success!".Dump();
-		}
-
-		#endregion
-	}
-
-	public static void Move(string ID)
-	{
-		#region Implementation
-
-		var destinationFolder = Paths.DONE_Folder;
-
-		var folder = new DirectoryInfo(Paths.Tasks_Folder).GetDirectories().Where(d => d.Name.StartsWith(ID)).FirstOrDefault();
-
-		if (folder != null)
-		{
-			var metaPath = string.Concat(folder.FullName, @"\meta.txt");
-
-			if (File.Exists(metaPath))
-			{
-				var metaString = MyUtils.ReadTxt(metaPath).FirstOrDefault();
-				var meta = JObject.Parse(metaString).ToObject<Meta>();
-
-				meta.End = DateTime.Now;
-
-				//Modificar el archivo 'meta', agregándole el 'End' date
-				MyUtils.WriteTxt(JsonConvert.SerializeObject(meta).ToString().Pipe(s => new[] { s }), metaPath, false);
-			}
-
-			var newPath = string.Concat(destinationFolder, @"\", folder.Name);
-
-			//Para evitar IO Exceptions
-			Thread.Sleep(100);
-
-			//Mover la carpeta a 'Tasks/DONE'
-			Directory.Move(folder.FullName, newPath);
-
-			"Success!".Dump();
-
-		}
-		else
-		{
-			"Folder doesnt exist!".Dump();
-		}
-
-		#endregion
-	}
-
-	public static Tasker.Meta ToMeta(string metasrc) =>
-			metasrc.Pipe(MyUtils.ReadTxt,
-						  string.Concat,
-						  JObject.Parse,
-						j => j.ToObject<Tasker.Meta>());
-
-	#endregion
-}
-
+*/
 #endregion
 
 #region Task Counter

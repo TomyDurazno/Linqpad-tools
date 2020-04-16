@@ -6,6 +6,8 @@ void Main()
        var y = new DateTime(2017,04,20);
 	   
 	   DiasEntre(x,y).Count().Dump();
+	   
+	   (x - y).Pipe(n => - n).TotalDays.Dump();
 }
 
         private IEnumerable<DateTime> DiasEntre(DateTime d0, DateTime d1)
