@@ -7,11 +7,7 @@ void Main()
 	watcher.Path = path;
 	watcher.NotifyFilter = NotifyFilters.LastWrite;
 	watcher.Filter = "*ticks.txt*";
-	watcher.Changed += new FileSystemEventHandler(OnChanged);
+	watcher.Changed += new FileSystemEventHandler((object s, FileSystemEventArgs e) => MyUtils.ReadTxt(e.FullPath).Last().Pipe(s => { Console.WriteLine(s); return s;}));
 	watcher.EnableRaisingEvents = true;
 }
 
-private void OnChanged(object source, FileSystemEventArgs e)
-{
-	MyUtils.ReadTxt(e.FullPath).Last().Call(s => Console.WriteLine(s));
-}
