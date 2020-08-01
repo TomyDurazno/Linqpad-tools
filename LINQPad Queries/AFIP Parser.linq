@@ -12,7 +12,9 @@ void Main()
 	{
 		models.Add(InputToAFIPModel(line));
 	}
-	
+
+	models.Select(m => m.ToDTO.MontoFactura).Sum().Dump("Monto Final:");
+
 	models.Dump();
 }
 
