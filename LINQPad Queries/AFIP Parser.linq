@@ -12,7 +12,7 @@ void Main()
 	var nombre_Excel = "Ventas Generadas";
 	
 	foreach (var line in OpenTxtFromDesktop(nombre_Archivo))
-		models.Add(InputToAFIPModel(line));
+		models.Add(InputToAFIPModel(line));	
 
 	models.All(m => m.IsValidated).Dump("Is Validated: ");
 
@@ -166,8 +166,8 @@ class AFIPRawModel
 		(string monto, string monedas) = Split(MontoFactura, size - 2);
 
 		var style = NumberStyles.AllowDecimalPoint;
-		var provider = CultureInfo.CurrentCulture;
-
+		var provider = new CultureInfo("en-US");
+		
 		if (decimal.TryParse($"{monto}.{monedas}", style, provider, out decimal montoFactura))
 			dto.MontoFactura = montoFactura;
 
