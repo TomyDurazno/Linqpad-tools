@@ -9,90 +9,76 @@ void Main()
 	var nombre = $"VENTAS.TXT";
 	
 	foreach (var line in OpenTxtFromDesktop(nombre))
-	{
 		models.Add(InputToAFIPModel(line));
-	}
 
-	models.Select(m => m.ToDTO.MontoFactura).Sum().Dump("Monto Final:");
+	models.All(m => m.IsValidated).Dump("Is Validated: ");
+
+	models.Select(d => d.DTO.MontoFactura).Sum().Dump("Monto Final:");
 
 	models.Dump();
 }
 
-public static IEnumerable<string> OpenTxtFromDesktop(string path)
-{
-	string line;
-	var fileStream = new FileStream($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/{path}", FileMode.Open, FileAccess.Read);
+#region Utils
 
-	using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+static string Concat<T>(IEnumerable<T> arr) => arr.Aggregate(new StringBuilder(), (acum, s) => acum.Append(s)).ToString();
+
+static (string taken, string left) Split(string s, int index) => (Concat(s.ToCharArray().Take(index)), Concat(s.ToCharArray().Skip(index)));
+
+static IEnumerable<string> OpenTxtFromDesktop(string path)
+{
+	var fullpath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/{path}";
+
+	if (!File.Exists(fullpath))
+		throw new FileNotFoundException($"El archivo {path} no se encuentra en el escritorio!");
+
+	string line;
+	using (var streamReader = new StreamReader(new FileStream(fullpath, FileMode.Open, FileAccess.Read), Encoding.UTF8))
 		while ((line = streamReader.ReadLine()) != null)
 			yield return line;
 }
 
-public static AFIPRawModel InputToAFIPModel(string input)
+#endregion
+
+#region AFIP Related
+
+static AFIPRawModel InputToAFIPModel(string input)
 {
 	var model = new AFIPRawModel();
 	
-	(string año,string without_y) = Split(input, 4); 
+	var acum = string.Empty;
 	
-	model.Año = año;
+	(model.Año, acum) = Split(input, 4); 
 	
-	(string mes, string without_yandm) = Split(without_y, 2);
+	(model.Mes, acum) = Split(acum, 2);
 	
-	model.Mes = mes;
+	(model.Dia, acum) = Split(acum, 2);
 	
-	(string dia, string left) = Split(without_yandm, 2);
+	(model.TipoDeComprobante, acum) = Split(acum, 3); 
 	
-	model.Dia = dia;
+	(model.PuntoDeVenta, acum) = Split(acum, 5);
 	
-	(string comprobante, string left2) = Split(left, 3); 
-	
-	model.TipoDeComprobante = comprobante;
-	
-	(string pdv, string left3) = Split(left2, 5);
-	
-	model.PuntoDeVenta = pdv;
-	
-	(string ncd, string left4) = Split(left3, 20);
-	
-	model.NumeroComprobanteDesde = ncd;
+	(model.NumeroComprobanteDesde, acum) = Split(acum, 20);
 
-	(string nca, string left5) = Split(left4, 20);
+	(model.NumeroComprobanteHasta, acum) = Split(acum, 20);
 
-	model.NumeroComprobanteHasta = nca;
-
-	(string codigoDoc, string left6) = Split(left5, 2);
-
-	model.CodigoDocumento = codigoDoc;
+	(model.CodigoDocumento, acum) = Split(acum, 2);
 	
-	(string dataAl, string left7) = Split(left6, 50);
-
-	model.DataAleatoria = dataAl;
+	(model.DataAleatoria, acum) = Split(acum, 50);
 	
-	(string montoFactura, string left8) = Split(left7, 15);
-
-	model.MontoFactura = montoFactura;
+	(model.MontoFactura, acum) = Split(acum, 15);
 	
-	model.DataAleatoria2 = left8;	
+	model.DataAleatoria2 =  acum;
 	
 	model.Validate(input);
 	
 	return model;
 }
 
-public static (string taken, string left) Split(string s, int index)
-{
-	var taken = s.ToCharArray().Take(index).Aggregate (new StringBuilder(), (x, y) => x.Append(y)).ToString();	
-	
-	var left = s.ToCharArray().Skip(index).Aggregate (new StringBuilder(), (x, y) => x.Append(y)).ToString();	
-	
-	return (taken, left);
-}
-
-public class AFIPRawModel
+class AFIPRawModel
 {
 	#region To DTO
 	
-	public AFIPDTO ToDTO => ToDto();
+	public AFIPDTO DTO => ToDto();
 
 	AFIPDTO ToDto()
 	{
@@ -140,11 +126,17 @@ public class AFIPRawModel
 
 	#endregion
 
-	#region Propiedades
+    #region Validation
 
-	public bool Validate(string s) => IsValidated = s == RawInput();
+	public string InputValue() => Concat(GetType().GetProperties().Where(p => p.PropertyType == typeof(string)).Select(p => p.GetValue(this)));
+
+	public bool Validate(string s) => IsValidated = s == InputValue();
 
 	public bool IsValidated { get; private set; }
+
+	#endregion
+	
+	#region Propiedades
 
 	public string Año { get; set; }
 	
@@ -169,27 +161,9 @@ public class AFIPRawModel
 	public string DataAleatoria2 { get; set; }
 
 	#endregion
-	
-	public string RawInput()
-	{
-		return new []
-		{
-			Año,
-			Mes,
-			Dia,			
-			TipoDeComprobante,
-			PuntoDeVenta,
-			NumeroComprobanteDesde,
-			NumeroComprobanteHasta,
-			CodigoDocumento,
-			DataAleatoria,
-			MontoFactura,
-			DataAleatoria2
-		}.Aggregate (new StringBuilder(), (x, y) => x.Append(y)).ToString();
-	}	
 }
 
-public class AFIPDTO
+class AFIPDTO
 {
 	public DateTime? Fecha { get; set; }
 
@@ -209,4 +183,6 @@ public class AFIPDTO
 
 	public string DataAleatoria2 { get; set; }
 }
+
+#endregion
 
