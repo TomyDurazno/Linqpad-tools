@@ -237,7 +237,7 @@ class AFIPDTO
 	
 	public string [] Rows => new string []
 	{
-		Fecha.ToString(),
+		$"{Fecha?.Day}/{Fecha?.Month}/{Fecha?.Year}",
 		TipoDeComprobante.ToString(),
 		PuntoDeVenta.ToString(),
 		NumeroComprobanteDesde.ToString(),
