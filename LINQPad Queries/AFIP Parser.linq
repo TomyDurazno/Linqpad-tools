@@ -28,7 +28,7 @@ void Main()
 
 	var fecha = models.First().DTO.Fecha;
 
-	GenerateSheet(matrix, $"{nombre_Excel} { fecha?.Month.ToString() } - { fecha?.Year }.xlsx");
+	GenerateSheet(matrix, $"{nombre_Excel} { fecha?.Month.ToString() } - { fecha?.Year }.xls");
 }
 
 #region Excel
