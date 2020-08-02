@@ -1,14 +1,17 @@
 <Query Kind="Program">
   <Namespace>System.Globalization</Namespace>
+  <Namespace>NPOI.HSSF.UserModel</Namespace>
 </Query>
 
 void Main()
 {	
 	var models = new List<AFIPRawModel>();
 	
-	var nombre = $"VENTAS.TXT";
+	var nombre_Archivo = $"VENTAS.TXT";
 	
-	foreach (var line in OpenTxtFromDesktop(nombre))
+	var nombre_Excel = "Ventas Generadas";
+	
+	foreach (var line in OpenTxtFromDesktop(nombre_Archivo))
 		models.Add(InputToAFIPModel(line));
 
 	models.All(m => m.IsValidated).Dump("Is Validated: ");
@@ -16,7 +19,54 @@ void Main()
 	models.Select(d => d.DTO.MontoFactura).Sum().Dump("Monto Final:");
 
 	models.Dump();
+	
+	var matrix = new List<string[]>();
+	
+	matrix.Add(AFIPDTO.Nombres);
+	
+	matrix.AddRange(models.Select(m => m.DTO.Rows).ToArray());
+
+	var fecha = models.First().DTO.Fecha;
+
+	GenerateSheet(matrix, $"{nombre_Excel} { fecha?.Month.ToString() } - { fecha?.Year }.xlsx");
 }
+
+#region Excel
+
+public static void GenerateSheet(IEnumerable<IEnumerable<string>> matrix, string path)
+{
+	var workbook = new HSSFWorkbook();
+	var sheet = workbook.CreateSheet();
+	int contRow = 0;
+	int contCell = 0;
+
+	foreach (var line in matrix)
+	{
+		var row = sheet.CreateRow(contRow);
+		contRow++;
+		contCell = 0;
+
+		foreach (var cell in line)
+		{
+			var auxcell = row.CreateCell(contCell);
+			auxcell.SetCellValue(cell);
+			contCell++;
+		}
+	}
+
+	Enumerable.Range(0, sheet.GetRow(0).PhysicalNumberOfCells)
+			  .ToList()
+			  .ForEach(i => { sheet.AutoSizeColumn(i); GC.Collect(); });
+
+	using (var xfile = new FileStream(DesktopPath(path), FileMode.Create, System.IO.FileAccess.Write))
+	{
+		workbook.Write(xfile);
+	}
+
+	"Workbook generated successfully".Dump();
+}
+
+#endregion
 
 #region Utils
 
@@ -24,9 +74,11 @@ static string Concat<T>(IEnumerable<T> arr) => arr.Aggregate(new StringBuilder()
 
 static (string taken, string left) Split(string s, int index) => (Concat(s.ToCharArray().Take(index)), Concat(s.ToCharArray().Skip(index)));
 
+static string DesktopPath(string path) => $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/{path}";
+
 static IEnumerable<string> OpenTxtFromDesktop(string path)
 {
-	var fullpath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/{path}";
+	var fullpath = DesktopPath(path);
 
 	if (!File.Exists(fullpath))
 		throw new FileNotFoundException($"El archivo {path} no se encuentra en el escritorio!");
@@ -182,6 +234,32 @@ class AFIPDTO
 	public decimal? MontoFactura { get; set; }
 
 	public string DataAleatoria2 { get; set; }
+	
+	public string [] Rows => new string []
+	{
+		Fecha.ToString(),
+		TipoDeComprobante.ToString(),
+		PuntoDeVenta.ToString(),
+		NumeroComprobanteDesde.ToString(),
+		NumeroComprobanteHasta.ToString(),
+		CodigoDocumento.ToString(),
+		DataAleatoria.ToString(),
+		MontoFactura.ToString(),
+		DataAleatoria2.ToString()
+	};
+	
+	public static string [] Nombres => new string []
+	{
+		"Fecha",
+		"TipoDeComprobante",
+		"PuntoDeVenta",
+		"NumeroComprobanteDesde",
+		"NumeroComprobanteHasta",
+		"CodigoDocumento",
+		"DataAleatoria",
+		"MontoFactura",
+		"DataAleatoria2"
+	};
 }
 
 #endregion
