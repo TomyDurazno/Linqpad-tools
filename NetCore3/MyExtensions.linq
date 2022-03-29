@@ -1082,9 +1082,9 @@ public static class MyUtils
 	{
 		var client = new RestClient(new Uri(url));
 
-		var request = new RestRequest(Method.GET);
+		var request = new RestRequest();
 
-		var response = await client.ExecuteTaskAsync(request);
+		var response = await client.GetAsync(request);
 
 		return response.StatusCode == System.Net.HttpStatusCode.OK;
 	}
@@ -1168,11 +1168,11 @@ public static class MyUtils
 	
 	public static class Http
 	{
-		public static async Task<IRestResponse> Post(string url, object body = null, Dictionary<string, object> parameters = null, Dictionary<string, string> headers = null)
+		public static async Task<RestResponse> Post(string url, object body = null, Dictionary<string, object> parameters = null, Dictionary<string, string> headers = null)
 		{
 			var client = new RestClient(new Uri(url));
 
-			var request = new RestRequest(Method.POST) { RequestFormat = DataFormat.Json };
+			var request = new RestRequest() { RequestFormat = DataFormat.Json };
 
 			if (headers != null)
 			{
@@ -1193,47 +1193,47 @@ public static class MyUtils
 			if (body != null)
 				request.AddBody(body);
 
-			return await client.ExecuteTaskAsync(request);
+			return await client.PostAsync(request);
 		}
 
-		public static async Task<IRestResponse> Post(string access_token, string url, object parameter)
+		public static async Task<RestResponse> Post(string access_token, string url, object parameter)
 		{
 			var client = new RestClient(new Uri(url));
 
-			var request = new RestRequest(Method.POST);
+			var request = new RestRequest();
 
 			request.AddHeader("Content-Type", "application/json");
 
 			request.AddParameter("Authorization", "Bearer " + access_token, ParameterType.HttpHeader);
 			request.AddParameter("application/json", parameter, ParameterType.RequestBody);
 
-			return await client.ExecuteTaskAsync(request);
+			return await client.PostAsync(request);
 		}
 
-		public static async Task<IRestResponse> Get(string access_token, string url, object parameter)
+		public static async Task<RestResponse> Get(string access_token, string url, object parameter)
 		{
 			var client = new RestClient(new Uri(url));
 
-			var request = new RestRequest(Method.GET);
+			var request = new RestRequest();
 
 			request.AddHeader("Content-Type", "application/json");
 
 			request.AddParameter("Authorization", "Bearer " + access_token, ParameterType.HttpHeader);
 			request.AddParameter("application/json", parameter, ParameterType.RequestBody);
 
-			return await client.ExecuteTaskAsync(request);
+			return await client.GetAsync(request);
 		}
 		
-		public static async Task<IRestResponse> Get(string url)
+		public static async Task<RestResponse> Get(string url)
 		{
 			var client = new RestClient(new Uri(url));
 
-			var request = new RestRequest(Method.GET);
+			var request = new RestRequest();
 
 			request.AddHeader("Content-Type", "application/json");
 			request.AddParameter("application/json", ParameterType.RequestBody);
 
-			return await client.ExecuteTaskAsync(request);
+			return await client.GetAsync(request);
 		}
 	}
 
